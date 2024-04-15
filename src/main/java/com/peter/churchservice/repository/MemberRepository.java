@@ -14,4 +14,6 @@ public interface MemberRepository {
     Optional<Member> findById(Long id);
 
     List<Member> findAll(MemberSearchParam cond);
+
+    void delete(Long memberId);
 }

@@ -1,0 +1,21 @@
+services:
+  mysql:
+    image: 'mysql:8.0.34'
+    environment:
+      - 'MYSQL_DATABASE=church'
+      - 'MYSQL_PASSWORD=test'
+      - 'MYSQL_ROOT_PASSWORD=rootsecret'
+      - 'MYSQL_USER=test'
+      - 'TZ=Asia/Seoul'
+    container_name: church-service-mysql
+    ports:
+      - '3309:3306'
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+    volumes:
+      - ../volume/mysql:/var/lib/mysql
+    # Secure MySQL installation options
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 5

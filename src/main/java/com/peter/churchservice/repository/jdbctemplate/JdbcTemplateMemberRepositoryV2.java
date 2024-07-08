@@ -1,6 +1,5 @@
 package com.peter.churchservice.repository.jdbctemplate;
 
-import com.peter.churchservice.domain.member.Gender;
 import com.peter.churchservice.domain.member.Member;
 import com.peter.churchservice.repository.MemberRepository;
 import com.peter.churchservice.repository.dto.MemberSearchParam;
@@ -17,37 +16,33 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 /**
  * NamedParameterJdbcTemplate 적용
+ * SimpleJdbcInsert 적용 (INSERT 문에서 sql 과 keyHolder 생략 가능)
  */
 @Primary
 @Repository
 public class JdbcTemplateMemberRepositoryV2 implements MemberRepository {
 
     private final NamedParameterJdbcTemplate template;
+    private final SimpleJdbcInsert jdbcInsert;
 
     public JdbcTemplateMemberRepositoryV2(DataSource dataSource) {
         this.template = new NamedParameterJdbcTemplate(dataSource);
+        this.jdbcInsert = new SimpleJdbcInsert(dataSource)
+            .withTableName("members")
+            .usingGeneratedKeyColumns("id");
     }
 
     @Override
     public Member save(Member member) {
-        String sql = "INSERT INTO members (name, gender, position, birth_date, address, phone_number)"
-            + " VALUES (:name,:gender,:position,:birthDate,:address,:phoneNumber)";
-
-        // enum 처리 기능을 추가한 BeanPropertySqlParameterSourceForEnum 적용
         SqlParameterSource param = new BeanPropertySqlParameterSourceForEnum(member);
-
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        template.update(sql, param, keyHolder);
-
-        long key = keyHolder.getKey().longValue();
-        member.setId(key);
+        Number key = jdbcInsert.executeAndReturnKey(param);
+        member.setId(key.longValue());
         return member;
     }
 

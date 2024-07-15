@@ -12,6 +12,7 @@ import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Primary;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -85,15 +86,7 @@ public class JdbcTemplateMemberRepositoryV2 implements MemberRepository {
     }
 
     private RowMapper<Member> memberRowMapper() {
-        return ((rs, rowNum) -> Member.builder()
-            .id(rs.getLong("id"))
-            .name(rs.getString("name"))
-            .gender(Gender.valueOf(rs.getString("gender")))
-            .position(rs.getString("position"))
-            .birthDate(rs.getDate("birth_date").toLocalDate())
-            .address(rs.getString("address"))
-            .phoneNumber(rs.getString("phone_number"))
-            .build());
+        return BeanPropertyRowMapper.newInstance(Member.class);
     }
 
     @Override

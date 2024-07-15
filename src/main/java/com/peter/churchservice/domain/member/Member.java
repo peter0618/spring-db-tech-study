@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode
 public class Member {
     private Long id;
@@ -20,8 +22,4 @@ public class Member {
     private LocalDate birthDate;
     private String address;
     private String phoneNumber;
-
-    public void setId(long longValue) {
-        this.id = longValue;
-    }
 }

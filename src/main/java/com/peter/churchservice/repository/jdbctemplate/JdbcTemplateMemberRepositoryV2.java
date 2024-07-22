@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
  * NamedParameterJdbcTemplate 적용
  * SimpleJdbcInsert 적용 (INSERT 문에서 sql 과 keyHolder 생략 가능)
  */
-@Primary
+//@Primary
 @Repository
 public class JdbcTemplateMemberRepositoryV2 implements MemberRepository {
 

@@ -3,6 +3,10 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.peter.churchservice.repository.mybatis.MemberMapper">
 
+  <sql id="memberColumns">
+    id, name, gender, position, birth_date, address, phone_number
+  </sql>
+
   <insert id="save" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO members (name, gender, position, birth_date, address, phone_number)
                  VALUES (#{name}, #{gender}, #{position}, #{birthDate}, #{address}, #{phoneNumber});
@@ -19,12 +23,14 @@
   </update>
 
   <select id="findById" resultType="Member">
-    SELECT id, name, gender, position, birth_date, address, phone_number
+    SELECT
+        <include refid="memberColumns"/>
       FROM members WHERE id=#{id}
   </select>
 
   <select id="findAll" resultType="Member">
-    SELECT id, name, gender, position, birth_date, address, phone_number
+    SELECT
+        <include refid="memberColumns"/>
       FROM members
      <where>
        <if test="name != null and name != ''">
